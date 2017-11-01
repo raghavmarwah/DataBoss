@@ -13,6 +13,8 @@ public class CreateTable extends JFrame implements ActionListener{
 	//GUI members
 	Container con = getContentPane();
 	JPanel panel1 = new JPanel();
+	JButton createTable = new JButton("Create Table!");
+	JLabel instructLabel = new JLabel("Enter table name: ");
 	
 	//CheckBoxes
 	JCheckBox row1Check = new JCheckBox();
@@ -36,12 +38,13 @@ public class CreateTable extends JFrame implements ActionListener{
 	JTextField row4Name = new JTextField(20);
 	JTextField row5Name = new JTextField(20);
 	JTextField row6Name = new JTextField(20);
+	JTextField tableName = new JTextField(10);
 	
 	public CreateTable(){
 		
 		super("Create Table");
 		setVisible(true);
-		setBounds(0,0,600,300);
+		setBounds(0,0,600,370);
 		setLayout(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -98,6 +101,9 @@ public class CreateTable extends JFrame implements ActionListener{
 		panel1.add(row6Name);
 		panel1.setLayout(new GridLayout(6,3,10,10));
 		attach(panel1,-100,0,700,300);
+		attach(instructLabel,60,320,200,20);
+		attach(tableName,200,320,150,20);
+		attach(createTable,360,320,150,20);
 		
 	}
 	
