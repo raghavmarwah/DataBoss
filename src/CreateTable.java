@@ -154,7 +154,19 @@ public class CreateTable extends JFrame implements ActionListener{
 				
 				String dataToWrite2 = "import java.io.*;\nimport java.util.*;\n\n"+"public class Driver"+className+"{\n";
 				dataToWrite2+="\tpublic static void main(String[] args){\n";
-				dataToWrite2+="\t\tArrayList<"+className+"> dataList = new ArrayList<>();\n";
+				dataToWrite2+="\t\tif(args[0].Equals(\"0\")){\n";
+				dataToWrite2+="\t\t\t"+className+" temp = new "+className+"(";
+				for(int i=1;i<=numAttributes;i++){
+					if(i==1)
+						dataToWrite2+=("args["+i+"]");
+					else
+						dataToWrite2+=(", args["+i+"]");
+				}
+				dataToWrite2+=");\n";
+				dataToWrite2+="\t\t\tObjectOutputStream binaryFile = new ObjectOutputStream(new FileOutputStream(\"DB_"+className+".dat\"));\n";
+				dataToWrite2+="\t\t\tbinaryFile.writeObject(temp);\n";
+				dataToWrite2+="\t\t\tbinaryFile.close();\n";
+				dataToWrite2+="\t\t}\n";
 				dataToWrite2+="\t}\n}";
 				
 				String dataToWrite3 = numAttributes+"";
