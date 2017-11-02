@@ -11,6 +11,7 @@ import java.io.*;
 public class CreateTable extends JFrame implements ActionListener{
 
 	final int MAX_ATT = 6; //Maximum number of attributes allowed per table!
+	int numAttributes = 0; //Number of attributes in the current table!
 	
 	//GUI members
 	Container con = getContentPane();
@@ -24,6 +25,7 @@ public class CreateTable extends JFrame implements ActionListener{
 	
 	//ComboBox Array
 	String[] dataTypesSupported = {"Integer","Decimal","Character","String"};
+	String[] javaDataTypes = {"int","float","char","String"};
 	@SuppressWarnings("unchecked")
 	JComboBox<String>[] rowCombo = new JComboBox[MAX_ATT];
 	
@@ -56,6 +58,7 @@ public class CreateTable extends JFrame implements ActionListener{
 			rowCombo[i].setEnabled(false);
 			rowName[i].setEnabled(false);
 		}
+		createTable.addActionListener(this);
 		
 		panel1.setLayout(new GridLayout(6,3,10,10));
 		//Adding items to panel 1
@@ -93,10 +96,12 @@ public class CreateTable extends JFrame implements ActionListener{
 					if(rowCheck[i].isSelected()){
 						rowCombo[i].setEnabled(true);
 						rowName[i].setEnabled(true);
+						numAttributes++;
 					}
 					else{
 						rowCombo[i].setEnabled(false);
 						rowName[i].setEnabled(false);
+						numAttributes--;
 					}
 				}
 			}
@@ -104,13 +109,49 @@ public class CreateTable extends JFrame implements ActionListener{
 		else if(source instanceof JButton){
 			if(source==createTable){
 				
-				File file = new File(tableName.getText());
-				String dataToWrite = "public class "+tableName.getText()+"{\n";
+				String className = Character.toUpperCase(tableName.getText().charAt(0))+tableName.getText().substring(1);
+				File classFile = new File(className+".java");
+				
+				/*
+				 *	Generating the string to store to the file.
+				 *	The string stores a class to write to the file.
+				 *	The class provides a data structure to mimic a table.
+				 */
+				
+				String dataToWrite = "public class "+className+"{\n\n";
+				for(int i=0;i<MAX_ATT;i++){
+					if(rowCheck[i].isSelected())
+						dataToWrite+=("\tprivate "+javaDataTypes[rowCombo[i].getSelectedIndex()]+" "+rowName[i].getText()+";\n");
+				}
+				dataToWrite+="\n\tpublic "+className+"(";
+				for(int i=0;i<MAX_ATT;i++){
+					if(rowCheck[i].isSelected()){
+						if(i==0)
+							dataToWrite+=(javaDataTypes[rowCombo[i].getSelectedIndex()]+" "+rowName[i].getText().substring(0,1)+i);
+						else
+							dataToWrite+=(" ,"+javaDataTypes[rowCombo[i].getSelectedIndex()]+" "+rowName[i].getText().substring(0,1)+i);
+					}
+				}
+				dataToWrite+="){\n";
+				for(int i=0;i<MAX_ATT;i++){
+					if(rowCheck[i].isSelected())
+						dataToWrite+=("\t\t"+rowName[i].getText()+"="+rowName[i].getText().substring(0,1)+i+";\n");
+				}
+				dataToWrite+="\t}\n";
+				for(int i=0;i<MAX_ATT;i++){
+					if(rowCheck[i].isSelected()){
+						dataToWrite+="\n\tpublic "+javaDataTypes[rowCombo[i].getSelectedIndex()]+" return_"+rowName[i].getText()+"(){\n";
+						dataToWrite+="\t\treturn "+rowName[i].getText()+";\n\t}";
+					}
+				}
+				dataToWrite+="\n\n}";
+				
+				
 				try {
 					
-					FileWriter outputFile = new FileWriter(file);
-					
-					outputFile.close();
+					FileWriter classFileWriter = new FileWriter(classFile);
+					classFileWriter.write(dataToWrite);
+					classFileWriter.close();
 					
 				} catch (IOException e1) {
 					e1.printStackTrace();
