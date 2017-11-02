@@ -111,11 +111,17 @@ public class CreateTable extends JFrame implements ActionListener{
 				
 				String className = Character.toUpperCase(tableName.getText().charAt(0))+tableName.getText().substring(1);
 				File classFile = new File(className+".java");
+				File driverFile = new File("Driver"+className+".java");
+				File infoFile = new File(className+".info");
 				
 				/*
 				 *	Generating the string to store to the file.
 				 *	The string stores a class to write to the file.
 				 *	The class provides a data structure to mimic a table.
+				 *
+				 *	dataToWrite: stores the data for the template class file.
+				 *	dataToWrite2: stores the data for a class that creates an ArrayList of the template class file.
+				 *	dataTOWrite3: stores number of attributes and name of each attribute field for the table. 
 				 */
 				
 				String dataToWrite = "public class "+className+"{\n\n";
@@ -146,12 +152,31 @@ public class CreateTable extends JFrame implements ActionListener{
 				}
 				dataToWrite+="\n\n}";
 				
+				String dataToWrite2 = "import java.io.*;\nimport java.util.*;\n\n"+"public class Driver"+className+"{\n";
+				dataToWrite2+="\tpublic static void main(String[] args){\n";
+				dataToWrite2+="\t\tArrayList<"+className+"> dataList = new ArrayList<>();\n";
+				dataToWrite2+="\t}\n}";
+				
+				String dataToWrite3 = numAttributes+"";
+				for(int i=0;i<MAX_ATT;i++){
+					if(rowCheck[i].isSelected())
+						dataToWrite3+=(","+rowName[i].getText());
+				}
+				
 				
 				try {
 					
 					FileWriter classFileWriter = new FileWriter(classFile);
 					classFileWriter.write(dataToWrite);
 					classFileWriter.close();
+					
+					FileWriter driverFileWriter = new FileWriter(driverFile);
+					driverFileWriter.write(dataToWrite2);
+					driverFileWriter.close();
+					
+					FileWriter infoFileWriter = new FileWriter(infoFile);
+					infoFileWriter.write(dataToWrite3);
+					infoFileWriter.close();
 					
 				} catch (IOException e1) {
 					e1.printStackTrace();
