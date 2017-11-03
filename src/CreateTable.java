@@ -124,7 +124,7 @@ public class CreateTable extends JFrame implements ActionListener{
 				 *	dataTOWrite3: stores number of attributes and name of each attribute field for the table. 
 				 */
 				
-				String dataToWrite = "public class "+className+"{\n\n";
+				String dataToWrite = "import java.io.Serializable;\n\npublic class "+className+" implements Serializable{\n\n";
 				for(int i=0;i<MAX_ATT;i++){
 					if(rowCheck[i].isSelected())
 						dataToWrite+=("\tprivate "+javaDataTypes[rowCombo[i].getSelectedIndex()]+" "+rowName[i].getText()+";\n");
@@ -153,14 +153,37 @@ public class CreateTable extends JFrame implements ActionListener{
 				dataToWrite+="\n\n}";
 				
 				String dataToWrite2 = "import java.io.*;\nimport java.util.*;\n\n"+"public class Driver"+className+"{\n";
-				dataToWrite2+="\tpublic static void main(String[] args){\n";
-				dataToWrite2+="\t\tif(args[0].Equals(\"0\")){\n";
+				dataToWrite2+="\tpublic static void main(String[] args) throws IOException{\n";
+				dataToWrite2+="\t\tif(args[0].compareTo(\"0\")==0){\n";
 				dataToWrite2+="\t\t\t"+className+" temp = new "+className+"(";
-				for(int i=1;i<=numAttributes;i++){
-					if(i==1)
-						dataToWrite2+=("args["+i+"]");
-					else
-						dataToWrite2+=(", args["+i+"]");
+				for(int i=0, j=1;i<MAX_ATT;i++){
+					if(rowCheck[i].isSelected()){
+						if(rowCombo[i].getSelectedIndex()==0){
+							if(j==1)
+								dataToWrite2+=("Integer.parseInt(args["+j+"])");
+							else
+								dataToWrite2+=(", Integer.parseInt(args["+j+"])");
+						}
+						else if(rowCombo[i].getSelectedIndex()==1){
+							if(j==1)
+								dataToWrite2+=("Float.parseFloat(args["+j+"])");
+							else
+								dataToWrite2+=(", Float.parseFloat(args["+j+"])");
+						}
+						else if(rowCombo[i].getSelectedIndex()==2){
+							if(j==1)
+								dataToWrite2+=("(args["+j+"]).chatAt(0)");
+							else
+								dataToWrite2+=(", (args["+j+"].charAt(0)");
+						}
+						else{
+							if(j==1)
+								dataToWrite2+=("args["+j+"])");
+							else
+								dataToWrite2+=(", args["+j+"]");
+						}
+						j++;
+					}
 				}
 				dataToWrite2+=");\n";
 				dataToWrite2+="\t\t\tObjectOutputStream binaryFile = new ObjectOutputStream(new FileOutputStream(\"DB_"+className+".dat\"));\n";
