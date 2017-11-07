@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.border.Border;
-
 import java.util.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -36,7 +35,7 @@ public class CreateTable extends JFrame implements ActionListener{
 		
 		super("Create Table");
 		setVisible(true);
-		setBounds(0,0,600,370);
+		setBounds(0,0,600,390);
 		setLayout(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -199,7 +198,7 @@ public class CreateTable extends JFrame implements ActionListener{
 					}
 				}
 				dataToWrite2+=");\n";
-				dataToWrite2+="\t\t\tObjectOutputStream binaryFile = new ObjectOutputStream(new FileOutputStream(\"DB_"+className+".dat\"));\n";
+				dataToWrite2+="\t\t\tObjectOutputStream binaryFile = new ObjectOutputStream(new FileOutputStream(\"DB_"+className+".dat\", true));\n";
 				dataToWrite2+="\t\t\tbinaryFile.writeObject(temp);\n";
 				dataToWrite2+="\t\t\tbinaryFile.close();\n";
 				dataToWrite2+="\t\t}\n";
@@ -226,6 +225,9 @@ public class CreateTable extends JFrame implements ActionListener{
 					FileWriter infoFileWriter = new FileWriter(infoFile);
 					infoFileWriter.write(dataToWrite3);
 					infoFileWriter.close();
+					
+					String cmd = "javac Driver"+className+".java";
+					Runtime.getRuntime().exec(cmd);
 					
 				} catch (IOException e1) {
 					e1.printStackTrace();
