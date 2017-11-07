@@ -124,6 +124,7 @@ public class CreateTable extends JFrame implements ActionListener{
 				 *	dataTOWrite3: stores number of attributes and name of each attribute field for the table. 
 				 */
 				
+				//dataToWrite
 				String dataToWrite = "import java.io.Serializable;\n\npublic class "+className+" implements Serializable{\n\n";
 				for(int i=0;i<MAX_ATT;i++){
 					if(rowCheck[i].isSelected())
@@ -150,8 +151,20 @@ public class CreateTable extends JFrame implements ActionListener{
 						dataToWrite+="\t\treturn "+rowName[i].getText()+";\n\t}";
 					}
 				}
+				dataToWrite+="\n\n\t@Override\n\tpublic String toString(){\n\t\treturn (\"\"";
+				for(int i=0,j=1;i<MAX_ATT;i++){
+					if(rowCheck[i].isSelected()){
+						if(j==numAttributes)
+							dataToWrite+=(" + "+rowName[i].getText());
+						else
+							dataToWrite+=(" + "+rowName[i].getText()+" + \" : \"");
+						j++;
+					}
+				}
+				dataToWrite+=");\n\t}";
 				dataToWrite+="\n\n}";
 				
+				//dataToWrite2
 				String dataToWrite2 = "import java.io.*;\nimport java.util.*;\n\n"+"public class Driver"+className+"{\n";
 				dataToWrite2+="\tpublic static void main(String[] args) throws IOException{\n";
 				dataToWrite2+="\t\tif(args[0].compareTo(\"0\")==0){\n";
@@ -174,11 +187,11 @@ public class CreateTable extends JFrame implements ActionListener{
 							if(j==1)
 								dataToWrite2+=("(args["+j+"]).chatAt(0)");
 							else
-								dataToWrite2+=(", (args["+j+"].charAt(0)");
+								dataToWrite2+=(", (args["+j+"]).charAt(0)");
 						}
 						else{
 							if(j==1)
-								dataToWrite2+=("args["+j+"])");
+								dataToWrite2+=("args["+j+"]");
 							else
 								dataToWrite2+=(", args["+j+"]");
 						}
@@ -192,6 +205,7 @@ public class CreateTable extends JFrame implements ActionListener{
 				dataToWrite2+="\t\t}\n";
 				dataToWrite2+="\t}\n}";
 				
+				//dataToWrite3
 				String dataToWrite3 = numAttributes+"";
 				for(int i=0;i<MAX_ATT;i++){
 					if(rowCheck[i].isSelected())
