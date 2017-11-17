@@ -32,11 +32,43 @@ public class MainServer {
 			}
 			
 		}while(userChoice!=3);
+		stdin.close();
 	}
 	public static void userSettings(){
 		
 	}
 	public static void dbSettings(){
+		
+		Scanner stdin = new Scanner(System.in);
+		int userChoice = 0;
+		
+		print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			
+		do{
+			print("\n1. Create a new database");
+			print("2. Add table to existing database");
+			print("3. Back");
+			
+			System.out.print("Please enter your choice: ");
+			userChoice = stdin.nextInt();
+			
+			if(userChoice==1)
+				createDatabase();
+			else if(userChoice==2)
+				addTable();
+			else if(userChoice==3)
+				continue;
+			else{
+				stdin.nextLine();
+				print("\nInvalid option selected! Press enter\\return key to continue.");
+				stdin.nextLine();
+			}
+		}while(userChoice!=3);
+	}
+	public static void createDatabase(){
+		
+	}
+	public static void addTable(){
 		
 	}
 	public static void print(String data){
