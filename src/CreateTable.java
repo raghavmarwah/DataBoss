@@ -226,6 +226,7 @@ public class CreateTable extends JFrame implements ActionListener{
 					infoFileWriter.write(dataToWrite3);
 					infoFileWriter.close();
 					
+					//Compiling the Driver file!
 					String cmd = "javac Driver"+className+".java";
 					Runtime.getRuntime().exec(cmd);
 					

@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class UserTemplate {
+public class UserTemplate implements Serializable{
 	
 	String uname;
 	String pass;
