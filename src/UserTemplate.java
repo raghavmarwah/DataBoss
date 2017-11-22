@@ -5,14 +5,14 @@ public class UserTemplate implements Serializable{
 	
 	String uname;
 	String pass;
-	ArrayList<String> accessDb;
+	String accessDb;
 	boolean isAdmin;
 	
 	public UserTemplate(String u, String p, boolean b){
 		uname = u;
 		pass = p;
 		isAdmin = b;
-		accessDb = new ArrayList<String>();
+		accessDb = "";
 	}
 	
 	public String returnUserName(){
@@ -23,10 +23,8 @@ public class UserTemplate implements Serializable{
 		return pass;
 	}
 	
-	public void printAccessibleDb(){
-		for(int i=0;i<accessDb.size();i++){
-			System.out.println(accessDb.get(i));
-		}
+	public String returnAccessDb(){
+		return accessDb;
 	}
 	
 	public boolean checkAdmin(){
@@ -34,11 +32,20 @@ public class UserTemplate implements Serializable{
 	}
 	
 	public void addDbAccess(String dbNum){
-		accessDb.add(dbNum);
+		if(accessDb.length()==0)
+			accessDb+=dbNum;
+		else
+			accessDb+=","+dbNum;
 	}
 	
 	public boolean checkDbAccess(String dbNum){
-		return (accessDb.contains(dbNum));
+		boolean check = false;
+		String[] splitData = accessDb.split(",");
+		for(int i=0;i<splitData.length;i++){
+			if(splitData[i].equals(dbNum))
+				check = true;
+		}
+		return check;
 	}
 	
 }

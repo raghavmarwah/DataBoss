@@ -31,7 +31,7 @@ public class CreateTable extends JFrame implements ActionListener{
 	//TextField Array
 	JTextField[] rowName = new JTextField[MAX_ATT];
 	
-	public CreateTable(){
+	public CreateTable(String tableClassName){
 		
 		super("Create Table");
 		setVisible(true);
@@ -67,6 +67,8 @@ public class CreateTable extends JFrame implements ActionListener{
 			panel1.add(rowName[i]);
 		}
 		
+		tableName.setText(tableClassName);
+		
 		attach(panel1,-100,0,700,300);
 		attach(instructLabel,60,320,200,20);
 		attach(tableName,200,320,150,20);
@@ -76,16 +78,20 @@ public class CreateTable extends JFrame implements ActionListener{
 		repaint();
 		
 	}
-	
+	public void resetAll(){
+		for(int i=0;i<MAX_ATT;i++){
+			rowCheck[i].setSelected(false);
+			rowCombo[i].setSelectedIndex(0);
+			rowCombo[i].setEnabled(false);
+			rowName[i].setText("");
+			rowName[i].setEnabled(false);
+			tableName.setText("");
+		}
+	}
 	public void attach(Component o, int x, int y, int w, int h){
 		o.setBounds(x,y,w,h);
 		con.add(o);
 	}
-	
-	public static void main(String[] args){
-		new CreateTable();
-	}
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
@@ -233,6 +239,10 @@ public class CreateTable extends JFrame implements ActionListener{
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+				
+				resetAll();
+				JOptionPane.showMessageDialog(this, className+" table created!!");
+				System.exit(0);
 			}
 		}
 	}
