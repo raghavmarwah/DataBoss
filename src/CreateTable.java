@@ -57,6 +57,7 @@ public class CreateTable extends JFrame implements ActionListener{
 			rowCombo[i].setEnabled(false);
 			rowName[i].setEnabled(false);
 		}
+		tableName.setEnabled(false);
 		createTable.addActionListener(this);
 		
 		panel1.setLayout(new GridLayout(6,3,10,10));
