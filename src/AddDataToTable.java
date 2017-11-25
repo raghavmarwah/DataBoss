@@ -43,7 +43,7 @@ public class AddDataToTable extends JFrame implements ActionListener {
 		//Initializing Object Arrays
 		for(int i=0,j=1;i<MAX_ATT;i++){
 			if(j<=numAttributes){
-				attributeName[i] = new JLabel(Character.toUpperCase(splitFileData[j].charAt(0))+splitFileData[j].substring(1));
+				attributeName[i] = new JLabel(splitFileData[j].charAt(0)+splitFileData[j].substring(1));
 				attributeName[i].setHorizontalTextPosition(JLabel.CENTER);
 				dataToSave[i] = new JTextField(10);
 				j++;

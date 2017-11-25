@@ -78,7 +78,9 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 		Object source = e.getSource();
 		if(source instanceof JButton){
 			if(source==loginButton){
-				
+
+				DefaultListModel<String> tempListModel  = (DefaultListModel<String>) dbList.getModel();
+				tempListModel.removeAllElements();
 				boolean loginSuccess = false;
 				String username = usnameInput.getText().toString();
 				String password = passInput.getText().toString();
@@ -108,11 +110,32 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 					usnameInput.setText("");
 					passInput.setText("");
 				}
-				String accessibleDbs = userObject.returnAccessDb();
-				String[] accessTokens = accessibleDbs.split(",");
-				DefaultListModel<String> tempListModel  = (DefaultListModel<String>) dbList.getModel();
-				for(int i=0;i<accessTokens.length;i++){
-					tempListModel.addElement(accessTokens[i]);
+				if(userObject.isAdmin==true){
+					try{
+						File file = new File("db.list");
+						DbTemplate dbObject = null;
+						ObjectInputStream dbFileIn = new ObjectInputStream(new FileInputStream(file));
+						try{
+							while(true){
+								dbObject = (DbTemplate) dbFileIn.readObject();
+								tempListModel.addElement(dbObject.returnDbName());
+							}
+						}catch(EOFException eof){
+				
+						}catch(ClassNotFoundException cnfex){
+							
+						}
+						finally{
+							dbFileIn.close();
+						}
+					}catch(IOException ioex){}
+				}
+				else{
+					String accessibleDbs = userObject.returnAccessDb();
+					String[] accessTokens = accessibleDbs.split(",");
+					for(int i=0;i<accessTokens.length;i++){
+						tempListModel.addElement(accessTokens[i]);
+					}
 				}
 			}
 			else if(source==displayTable){

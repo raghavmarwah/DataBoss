@@ -163,7 +163,7 @@ public class CreateTable extends JFrame implements ActionListener{
 						if(j==numAttributes)
 							dataToWrite+=(" + "+rowName[i].getText());
 						else
-							dataToWrite+=(" + "+rowName[i].getText()+" + \" : \"");
+							dataToWrite+=(" + "+rowName[i].getText()+" + \",\"");
 						j++;
 					}
 				}
@@ -172,7 +172,7 @@ public class CreateTable extends JFrame implements ActionListener{
 				
 				//dataToWrite2
 				String dataToWrite2 = "import java.io.*;\nimport java.util.*;\n\n"+"public class Driver"+className+"{\n";
-				dataToWrite2+="\tpublic static void main(String[] args) throws IOException{\n";
+				dataToWrite2+="\tpublic static void main(String[] args) throws IOException, ClassNotFoundException{\n";
 				dataToWrite2+="\t\tif(args[0].compareTo(\"0\")==0){\n";
 				dataToWrite2+="\t\t\t"+className+" temp = new "+className+"(";
 				for(int i=0, j=1;i<MAX_ATT;i++){
@@ -205,10 +205,21 @@ public class CreateTable extends JFrame implements ActionListener{
 					}
 				}
 				dataToWrite2+=");\n";
-				dataToWrite2+="\t\t\tObjectOutputStream binaryFile = new ObjectOutputStream(new FileOutputStream(\"DB_"+className+".dat\", true));\n";
-				dataToWrite2+="\t\t\tbinaryFile.writeObject(temp);\n";
-				dataToWrite2+="\t\t\tbinaryFile.close();\n";
+				dataToWrite2+="\t\t\tFile file = new File(\"DB_"+className+".dat\");\n\t\t\tif(!file.exists()){\n";
+				dataToWrite2+="\t\t\t\tObjectOutputStream binaryFile = new ObjectOutputStream(new FileOutputStream(file, true));\n";
+				dataToWrite2+="\t\t\t\tbinaryFile.writeObject(temp);\n";
+				dataToWrite2+="\t\t\t\tbinaryFile.close();\n\t\t\t}\n\t\t\telse{\n";
+				dataToWrite2+="\t\t\t\tAppendingObjectOutputStream binaryFile = new AppendingObjectOutputStream(new FileOutputStream(file, true));\n";
+				dataToWrite2+="\t\t\t\tbinaryFile.writeObject(temp);\n";
+				dataToWrite2+="\t\t\t\tbinaryFile.close();\n\t\t\t}";
 				dataToWrite2+="\t\t}\n";
+				dataToWrite2+="\t\telse if(args[0].compareTo(\"1\")==0){\n";
+				dataToWrite2+="\t\t\t"+className+" temp;\n";
+				dataToWrite2+="\t\t\tObjectInputStream binaryFile = new ObjectInputStream(new FileInputStream(\"DB_"+className+".dat\"));\n";
+				dataToWrite2+="\t\t\tPrintWriter textFile = new PrintWriter(\"DB_"+className+".txt\");\n";
+				dataToWrite2+="\t\t\ttry{\n\t\t\t\twhile(true){\n\t\t\t\t\ttemp=("+className+")binaryFile.readObject();\n";
+				dataToWrite2+="\t\t\t\t\ttextFile.println(temp.toString());\n";
+				dataToWrite2+="\t\t\t\t}\n\t\t\t}catch(EOFException eof){}\n\t\t\tbinaryFile.close();\n\t\t\ttextFile.close();\n\t\t}\n";
 				dataToWrite2+="\t}\n}";
 				
 				//dataToWrite3
