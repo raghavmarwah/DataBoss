@@ -231,7 +231,9 @@ public class MainServer {
 			try{
 				while(true){
 					userObject = (UserTemplate) userFileIn.readObject();
-					print(count+++". "+userObject.returnUserName()+": "+userObject.returnAccessDb());
+					if(userObject.isAdmin==false){
+						print(count+++". "+userObject.returnUserName()+": "+userObject.returnAccessDb());
+					}
 				}
 			}catch(EOFException eof){
 	
