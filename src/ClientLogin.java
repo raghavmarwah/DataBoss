@@ -69,7 +69,7 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 		con.add(o);
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		new ClientLogin();
 	}
 
@@ -141,7 +141,9 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 			else if(source==displayTable){
 				String selectedDb = dbList.getSelectedValue().toString();
 				String selectedTable = tableList.getSelectedValue().toString();
-				new DisplayTable(selectedDb+"_"+selectedTable);
+				try{
+					new DisplayTable(selectedDb+"_"+selectedTable);
+				}catch(IOException ioex){}
 			}
 		}
 	}
