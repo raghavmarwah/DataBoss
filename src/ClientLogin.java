@@ -35,11 +35,18 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 		setLayout(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		displayTable.setEnabled(false);
+		
 		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		sp2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		displayTable.addActionListener(this);
 		addData.addActionListener(this);
 		loginButton.addActionListener(this);
+		
+		dbList.setModel(new DefaultListModel<String>());
+		tableList.setModel(new DefaultListModel<String>());
+		dbList.addListSelectionListener(this);
+		tableList.addListSelectionListener(this);
 		
 		attach(loginLabel,20,120,200,20);
 		attach(usnameLabel,20,160,100,20);
@@ -68,12 +75,89 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		Object source = e.getSource();
+		if(source instanceof JButton){
+			if(source==loginButton){
+				
+				boolean loginSuccess = false;
+				String username = usnameInput.getText().toString();
+				String password = passInput.getText().toString();
+				File userFile = new File("user.list");
+				UserTemplate userObject = null;
+				
+				try{
+					ObjectInputStream userFileIn = new ObjectInputStream(new FileInputStream(userFile));				
+					try{
+						while(true){
+							userObject = (UserTemplate) userFileIn.readObject();
+							if(username.equals(userObject.returnUserName())&&password.equals(userObject.returnPassword())){
+								loginSuccess = true;
+								break;
+							}
+						}
+					}catch(EOFException eof){
+								
+					}finally{
+						userFileIn.close();
+					}
+				}catch(IOException | ClassNotFoundException ex){
+					
+				}
+				if(loginSuccess==false){
+					JOptionPane.showMessageDialog(this, "User profile not found!");
+					usnameInput.setText("");
+					passInput.setText("");
+				}
+				String accessibleDbs = userObject.returnAccessDb();
+				String[] accessTokens = accessibleDbs.split(",");
+				DefaultListModel<String> tempListModel  = (DefaultListModel<String>) dbList.getModel();
+				for(int i=0;i<accessTokens.length;i++){
+					tempListModel.addElement(accessTokens[i]);
+				}
+			}
+			else if(source==displayTable){
+				String selectedDb = dbList.getSelectedValue().toString();
+				String selectedTable = tableList.getSelectedValue().toString();
+				new DisplayTable(selectedDb+"_"+selectedTable);
+			}
+		}
 	}
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
+		Object source = e.getSource();
+		if(source==dbList){
+			DefaultListModel<String> tempListModel  = (DefaultListModel<String>) tableList.getModel();
+			tempListModel.removeAllElements();
+			
+			String selectedDb = dbList.getSelectedValue().toString();
+			File file = new File("db.list");
+			DbTemplate dbObject = null;
+			
+			try{
+				ObjectInputStream dbFileIn = new ObjectInputStream(new FileInputStream(file));
+				try{
+					while(true){
+						dbObject = (DbTemplate) dbFileIn.readObject();
+						if(dbObject.returnDbName().equals(selectedDb)){
+							break;
+						}
+					}
+				}catch(EOFException eof){
 		
-		
+				}finally{
+					dbFileIn.close();
+				}
+			}catch(IOException | ClassNotFoundException ex){
+				
+			}
+			String tablesInDb = dbObject.displayTables();
+			String[] tablesTokens = tablesInDb.split(",");
+			for(int i=0;i<tablesTokens.length;i++){
+				tempListModel.addElement(tablesTokens[i]);
+			}
+			tableList.setSelectedIndex(0);
+			displayTable.setEnabled(true);
+		}
 	}
 
 }
