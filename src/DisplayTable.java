@@ -17,6 +17,7 @@ public class DisplayTable extends JFrame implements ActionListener, ListSelectio
 	
 	//LinkedList
 	LinkedList dataList = new LinkedList();
+	LinkedList copyList, selectiveList;
 	
 	//GUI Members
 	Container con = getContentPane();
@@ -114,9 +115,6 @@ public class DisplayTable extends JFrame implements ActionListener, ListSelectio
 		repaint();
 		
 	}
-	public static void main(String[] args) throws IOException{
-		new DisplayTable("JugoJuice_Customer");
-	}
 	public void attach(Component o, int x, int y, int w, int h){
 		o.setBounds(x,y,w,h);
 		con.add(o);
@@ -124,16 +122,18 @@ public class DisplayTable extends JFrame implements ActionListener, ListSelectio
 	public void buildList(){
 		dataList = new LinkedList();
 		File tableFile = new File("DB_"+classNameGlobal+".txt");
-		try{
-			BufferedReader br = new BufferedReader(new FileReader(tableFile));
-			String tempLine = "";
-			while((tempLine = br.readLine())!=null){
-				String[] splitData = tempLine.split(",");
-				dataList.insert(splitData);
+		if(tableFile.exists()){
+			try{
+				BufferedReader br = new BufferedReader(new FileReader(tableFile));
+				String tempLine = "";
+				while((tempLine = br.readLine())!=null){
+					String[] splitData = tempLine.split(",");
+					dataList.insert(splitData);
+				}
+				br.close();
+			}catch(IOException ioex){
+				ioex.printStackTrace();
 			}
-			br.close();
-		}catch(IOException ioex){
-			ioex.printStackTrace();
 		}
 	}
 	public void addToList(String data){
@@ -190,11 +190,66 @@ public class DisplayTable extends JFrame implements ActionListener, ListSelectio
 			}
 		}
 		else if(source==showAll){
+			buildList();
 			refreshList(dataList);
+			whereData.setText("");
+			whereItem.setSelectedIndex(0);
+			whereOperator.setSelectedIndex(0);
 		}
 		else if(source==refineSearch){
+			copyList = new LinkedList();
+			selectiveList = new LinkedList();
+			for(int i=0;i<dataList.size();i++){
+				copyList.insert(dataList.get(i));
+			}
+			int operatorNum = whereOperator.getSelectedIndex();
+			int itemNum = whereItem.getSelectedIndex();
+			String dataToCompare = whereData.getText();
+			bubbleSort(copyList,itemNum);
+			for(int i=0;i<copyList.size();i++){
+				if(operatorNum==0){
+					if(copyList.get(i)[itemNum].toLowerCase().compareTo(dataToCompare.toLowerCase())==0)
+						selectiveList.insert(copyList.get(i));
+				}
+				else if(operatorNum==1){
+					if(copyList.get(i)[itemNum].toLowerCase().compareTo(dataToCompare.toLowerCase())<=0)
+						selectiveList.insert(copyList.get(i));
+				}
+				else if(operatorNum==2){
+					if(copyList.get(i)[itemNum].toLowerCase().compareTo(dataToCompare.toLowerCase())>=0)
+						selectiveList.insert(copyList.get(i));			
+				}
+				else if(operatorNum==3){
+					if(copyList.get(i)[itemNum].toLowerCase().compareTo(dataToCompare.toLowerCase())<0)
+						selectiveList.insert(copyList.get(i));
+				}
+				else if(operatorNum==4){
+					if(copyList.get(i)[itemNum].toLowerCase().compareTo(dataToCompare.toLowerCase())>0)
+						selectiveList.insert(copyList.get(i));
+				}
+				else if(operatorNum==5){
+					if(copyList.get(i)[itemNum].toLowerCase().compareTo(dataToCompare.toLowerCase())!=0)
+						selectiveList.insert(copyList.get(i));
+				}
+			}
+			refreshList(selectiveList);
 			
 		}
+	}
+	//Bubble Sort implementation
+	
+	public void bubbleSort(LinkedList list, int dataNum){
+		String[] temp;
+		for(int i=0;i<list.size();i++){//Outer loop in bubble sort is just for counting N
+			for(int j=0;j<list.size()-1;j++){
+				if(list.get(j)[dataNum].compareTo(list.get(j+1)[dataNum])>0){
+					temp = list.get(j+1);
+					list.set(j+1, list.get(j));;
+					list.set(j, temp);;
+				}
+			}
+		}
+		
 	}
 
 }

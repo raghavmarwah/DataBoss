@@ -35,7 +35,7 @@ public class LinkedList {
 	public String[] get(int pos){
 		Node temp = front;
 		String[] tempArr = temp.data;
-		int count=1;
+		int count=0;
 		while(temp!=null){
 			if(count==pos){
 				tempArr = temp.data;
@@ -47,5 +47,19 @@ public class LinkedList {
 			}				
 		}
 		return tempArr;
+	}
+	public void set(int pos, String[] data){
+		Node temp = front;
+		int count=0;
+		while(temp!=null){
+			if(count==pos){
+				temp.data = data;
+				break;
+			}
+			else{
+				count++;
+				temp = temp.link;
+			}				
+		}
 	}
 }

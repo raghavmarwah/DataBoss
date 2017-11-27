@@ -22,7 +22,6 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 	JTextField passInput = new JTextField();
 	JButton loginButton = new JButton("Login");
 	JButton displayTable = new JButton("Display Table");
-	JButton addData = new JButton("Add Data");
 	JList<String> dbList = new JList<>();
 	JList<String> tableList = new JList<>();
 	JScrollPane sp = new JScrollPane(dbList);
@@ -31,7 +30,7 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 	public ClientLogin(){
 		super("Client Login");
 		setVisible(true);
-		setBounds(0,0,850,380);
+		setBounds(0,0,840,380);
 		setLayout(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -40,7 +39,6 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		sp2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		displayTable.addActionListener(this);
-		addData.addActionListener(this);
 		loginButton.addActionListener(this);
 		
 		dbList.setModel(new DefaultListModel<String>());
@@ -58,8 +56,7 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 		attach(sp,260,50,200,280);
 		attach(selectTableLabel,480,20,150,20);
 		attach(sp2,480,50,200,280);
-		attach(displayTable,690,160,130,20);
-		attach(addData,690,190,130,20);
+		attach(displayTable,690,180,130,20);
 		
 		revalidate();
 		repaint();
@@ -141,8 +138,10 @@ public class ClientLogin extends JFrame implements ActionListener, ListSelection
 			else if(source==displayTable){
 				String selectedDb = dbList.getSelectedValue().toString();
 				String selectedTable = tableList.getSelectedValue().toString();
+				String finalClassName = selectedDb+"_"+selectedTable;
 				try{
-					new DisplayTable(selectedDb+"_"+selectedTable);
+					new JavaCmdRun("java Driver"+finalClassName+" 1");
+					new DisplayTable(finalClassName);
 				}catch(IOException ioex){}
 			}
 		}
