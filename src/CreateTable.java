@@ -245,8 +245,7 @@ public class CreateTable extends JFrame implements ActionListener{
 					infoFileWriter.close();
 					
 					//Compiling the Driver file!
-					String cmd = "javac Driver"+className+".java";
-					Runtime.getRuntime().exec(cmd);
+					new JavaCmdRun("javac Driver"+className+".java");
 					
 				} catch (IOException e1) {
 					e1.printStackTrace();
